@@ -1,0 +1,30 @@
+---
+title: 'Kaggle: House Price Prediction'
+author: "tiangsinf"
+date: "9/23/2018"
+output: 
+  html_document: 
+    keep_md: yes
+---
+
+```{r, Prelims, message = FALSE}
+library(tidyverse)
+library(ggplot2)
+
+# import data
+house_price <- read_csv("dataset/train.csv")
+```
+
+```{r, nooutput, results = 'hide'}
+head(house_price, n = 10)
+str(house_price) # 81 variables including id
+```
+
+```{r, the dataset}
+table(sapply(house_price, class)) # 43 char and 38 int columns
+
+# Check columns with na value:
+col_with_na <- sapply(house_price, function(x) any(is.na(x)))
+names(house_price[col_with_na]) # list of columns with na values. Total 19 columns with na.
+```
+

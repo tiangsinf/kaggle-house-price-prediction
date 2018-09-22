@@ -320,8 +320,9 @@ library(ggplot2)
 house_price &lt;- read_csv(&quot;dataset/train.csv&quot;)</code></pre>
 <pre class="r"><code>head(house_price, n = 10)
 str(house_price) # 81 variables including id</code></pre>
-<pre class="r"><code>table(sapply(house_price, class)) # 43 char and 38 int columns</code></pre>
-<pre><code>## 
+<pre class="r"><code>col_class &lt;- sapply(house_price, class)
+table(col_class) # 43 char and 38 int columns</code></pre>
+<pre><code>## col_class
 ## character   integer 
 ##        43        38</code></pre>
 <pre class="r"><code># Check columns with na value:
@@ -332,6 +333,30 @@ names(house_price[col_with_na]) # list of columns with na values. Total 19 colum
 ##  [9] &quot;BsmtFinType2&quot; &quot;Electrical&quot;   &quot;FireplaceQu&quot;  &quot;GarageType&quot;  
 ## [13] &quot;GarageYrBlt&quot;  &quot;GarageFinish&quot; &quot;GarageQual&quot;   &quot;GarageCond&quot;  
 ## [17] &quot;PoolQC&quot;       &quot;Fence&quot;        &quot;MiscFeature&quot;</code></pre>
+<pre class="r"><code># Subset numeric columns
+int_col &lt;- names(house_price[col_class == &quot;integer&quot;])
+int_house_price &lt;- house_price[, int_col][-1] # Subset integer columns and drop id
+head(int_house_price)</code></pre>
+<pre><code>## # A tibble: 6 x 37
+##   MSSubClass LotFrontage LotArea OverallQual OverallCond YearBuilt
+##        &lt;int&gt;       &lt;int&gt;   &lt;int&gt;       &lt;int&gt;       &lt;int&gt;     &lt;int&gt;
+## 1         60          65    8450           7           5      2003
+## 2         20          80    9600           6           8      1976
+## 3         60          68   11250           7           5      2001
+## 4         70          60    9550           7           5      1915
+## 5         60          84   14260           8           5      2000
+## 6         50          85   14115           5           5      1993
+## # ... with 31 more variables: YearRemodAdd &lt;int&gt;, MasVnrArea &lt;int&gt;,
+## #   BsmtFinSF1 &lt;int&gt;, BsmtFinSF2 &lt;int&gt;, BsmtUnfSF &lt;int&gt;,
+## #   TotalBsmtSF &lt;int&gt;, `1stFlrSF` &lt;int&gt;, `2ndFlrSF` &lt;int&gt;,
+## #   LowQualFinSF &lt;int&gt;, GrLivArea &lt;int&gt;, BsmtFullBath &lt;int&gt;,
+## #   BsmtHalfBath &lt;int&gt;, FullBath &lt;int&gt;, HalfBath &lt;int&gt;,
+## #   BedroomAbvGr &lt;int&gt;, KitchenAbvGr &lt;int&gt;, TotRmsAbvGrd &lt;int&gt;,
+## #   Fireplaces &lt;int&gt;, GarageYrBlt &lt;int&gt;, GarageCars &lt;int&gt;,
+## #   GarageArea &lt;int&gt;, WoodDeckSF &lt;int&gt;, OpenPorchSF &lt;int&gt;,
+## #   EnclosedPorch &lt;int&gt;, `3SsnPorch` &lt;int&gt;, ScreenPorch &lt;int&gt;,
+## #   PoolArea &lt;int&gt;, MiscVal &lt;int&gt;, MoSold &lt;int&gt;, YrSold &lt;int&gt;,
+## #   SalePrice &lt;int&gt;</code></pre>
 
 
 

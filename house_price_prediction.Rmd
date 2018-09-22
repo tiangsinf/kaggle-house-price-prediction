@@ -21,10 +21,16 @@ str(house_price) # 81 variables including id
 ```
 
 ```{r, the dataset}
-table(sapply(house_price, class)) # 43 char and 38 int columns
+col_class <- sapply(house_price, class)
+table(col_class) # 43 char and 38 int columns
 
 # Check columns with na value:
 col_with_na <- sapply(house_price, function(x) any(is.na(x)))
 names(house_price[col_with_na]) # list of columns with na values. Total 19 columns with na.
+
+# Subset numeric columns
+int_col <- names(house_price[col_class == "integer"])
+int_house_price <- house_price[, int_col][-1] # Subset integer columns and drop id
+head(int_house_price)
 ```
 

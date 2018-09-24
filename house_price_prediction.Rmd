@@ -12,7 +12,7 @@ library(tidyverse)
 library(ggplot2)
 
 # import data
-house_price <- read_csv("dataset/train.csv")
+house_price <- read.csv("dataset/train.csv")
 ```
 
 ```{r, nooutput, results = 'hide'}
@@ -20,17 +20,89 @@ head(house_price, n = 10)
 str(house_price) # 81 variables including id
 ```
 
+## Dealing with Factors
+Based on `data_description.txt`, `MSSubClass`, `OverallQual`, `OverallCond` columns should be ordinal factors instead of integers. The following chuck is to convert `MSSubClass` column to a factor.
+Besides, there are others unordered factors that appears to be ordered include:
+* LotShape
+* Utilities
+* LandSlope
+* ExterQual
+* ExterCond
+* BsmtQual
+* BsmtCond
+* BsmtExposure
+* BsmtFinType1
+* BsmtFinType2
+* HeatingQC
+* KitchenQual
+* Functional
+* FireplaceQu
+* GarageFinish
+* GarageQual
+* GarageCond
+* PoolQC
+* Fence
+```{r}
+# Convert MSSubClass
+house_price$MSSubClass <- factor(house_price$MSSubClass, ordered = TRUE, levels = c(20, 30, 40, 45, 50, 60, 70, 75, 80, 85, 90, 120, 150, 160, 180, 190))
+
+# Convert OverallQual
+house_price$OverallQual <- factor(house_price$OverallQual, ordered = TRUE, levels = c(10, 9, 8, 7, 6, 5, 4, 3, 2, 1))
+
+# Convert OverallQual
+house_price$OverallCond <- factor(house_price$OverallCond, ordered = TRUE, levels = c(10, 9, 8, 7, 6, 5, 4, 3, 2, 1))
+```
+
+### Treating `NA` values.
+Checking from `data_description.txt` certain `NA` values are not missing values. For example, the `NA` for `house_price$PoolQC` represent "No Pool" instead of missing value. Perhaps I should first convert these type of `NA` to a more meaningful values.
+Columns with `NA` that are not missing values include:
+* Alley - No alley access
+* BsmtQual - No basement
+* BsmtCond - No basement
+* BsmtExposure - No basement
+* BsmtFinType1 - No basement
+* BsmtFinType2 - No basement
+* FireplaceQu - No fireplace
+* GarageType - No garage
+* GarageFinish - No garage
+* GarageQual - No garage
+* GarageCond - No garage
+* PoolQC - No pool
+* Fence - No fence
+* MiscFeature - No misc feature
+
+```{r}
+col_with_na <- sapply(house_price, function(x) any(is.na(x)))
+names(house_price[col_with_na]) # list of columns with na values. Total 19 columns with na.
+```
+
+
+
 ```{r, the dataset}
 col_class <- sapply(house_price, class)
-table(col_class) # 43 char and 38 int columns
+table(col_class) # 43 factor and 38 int columns
 
 # Check columns with na value:
 col_with_na <- sapply(house_price, function(x) any(is.na(x)))
 names(house_price[col_with_na]) # list of columns with na values. Total 19 columns with na.
 
-# Subset numeric columns
+# Separating num and fac columns
 int_col <- names(house_price[col_class == "integer"])
-int_house_price <- house_price[, int_col][-1] # Subset integer columns and drop id
-head(int_house_price)
+fac_col <- names(house_price[col_class == "factor"])
+
+int_col_df <- house_price[, int_col][-1] # Subset integer columns and drop id
+fac_col_df <- house_price[, fac_col]
+
+View(head(fac_col_df, n = 20))
+View(head(int_col_df, n = 20))
+fac_levels <- sapply(fac_col_df, levels)
+
+house_price %>%
+    group_by(BsmtQual) %>%
+    summarise(n = n())
+```
+
+```{r}
+
 ```
 
